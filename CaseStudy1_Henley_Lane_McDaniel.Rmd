@@ -48,7 +48,7 @@ head(merged)
 tail(merged)
 ```
 
-As expected, we did encounter some instances of missing data after the merge.  Specifically, there were 1067 instances in total of missing data that were being incorrectly measured as "NA".  There were 62 instances in the ABV column and 1005 in the IBU column.  
+As expected, we did encounter some instances of missing data after the merge.  Specifically, there were 1067 instances in total of missing datum that were not measured/recorded and are marked as "NA".  There were 62 instances in the ABV column and 1005 in the IBU column.  
 
 ```{r, echo=TRUE}
 ##First we must fix the numeric columns incorrectly listed as ordered factors
