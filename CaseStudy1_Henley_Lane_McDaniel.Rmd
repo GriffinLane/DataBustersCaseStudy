@@ -5,10 +5,6 @@ date: "October 19, 2017"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 Mega Awesome Beer Corp. (MABco), has commissioned Data Busters, Inc.(DBI) to examine data sets they have provided, with the purpose of answering some key questions and findings that should be derived directly from the data provided.  These are the results. 
 
 Two data sets were provided by MABco and used by DBI to provide the findings below.  One data 
@@ -17,9 +13,9 @@ provides brewery data where each beer is produced.  We've read the raw data into
 for analysis.
 
 ```{r, echo=TRUE}
-BeerData <- read.csv2(file="C:/Users/henlek1/Desktop/Beers.csv", header=TRUE, sep=",", col.name=c("Name", "BeerID", "ABV", "IBU", "BreweryID", "Style", "Ounces"))
+beerData <- read.csv2(url("https://raw.githubusercontent.com/GriffinLane/DataBustersCaseStudy/master/Beers.csv"), header=TRUE, sep=",", col.name=c("Name", "BeerID", "ABV", "IBU", "BreweryID", "Style", "Ounces"))
 
-BrewiesData <- read.csv2(file="C:/Users/henlek1/Desktop/Breweries.csv", header=TRUE, sep=",", col.name=c("BreweryID", "BreweryName", "City", "State"))
+breweriesData <- read.csv2(url("https://raw.githubusercontent.com/GriffinLane/DataBustersCaseStudy/master/Breweries.csv"), header=TRUE, sep=",", col.name=c("BreweryID", "BreweryName", "City", "State"))
 ```
 
 Below is the summary for both data sets.  As you can see the data provided is organized
@@ -28,10 +24,10 @@ to work with.  We will walk you through the results below, and provide you with 
 background necessary to understand the context behind our findings, and hopefully answer
 all of your questions.
 ```{r, echo=TRUE}
-summary (BeerData)
-str(BeerData)
-summary (BrewiesData)
-str(BrewiesData)
+summary (beerData)
+str(beerData)
+summary (breweriesData)
+str(breweriesData)
 ```
 
 In order to take full advantage of the data provided we have opted to merge the two files.
@@ -39,7 +35,7 @@ The new merged data set contains ALL the measurable variables in one file called
 but will now allow us to cross reference the beer and brewery data for a more complete analysis.
 
 ```{r,  echo=TRUE}
-merged <- merge(BeerData, BrewiesData, by = "BreweryID", all=FALSE)
+merged <- merge(beerData, breweriesData, by = "BreweryID", all=TRUE)
 ```
 
 To further organize our data we have taken a look at the first and last few entries within
@@ -61,17 +57,17 @@ As expected, we did encounter some instances of missing data after the merge.  S
 merged$ABV <- as.numeric(as.matrix(merged$ABV))
 merged$Ounces <- as.numeric(merged$Ounces)
 
-
-
+##This line will return the sum of all NAs in each column
 colSums(is.na(merged))
 ```
 
-Now that we've organized the data provided we can get down to providing the information that
-you've requested.  In order to further understand MABco's brewery presence in each U.S. state we have provided a summary table below:
-
+In order to provide a neater representation on a per state basis, we have sorted the data frame by state and city. This will allow for state subsections of the data to be neatly ordered by city in the future.  In order to further understand competitor brewery presence in each U.S. state we have provided a summary table below:
 ```{r, echo=TRUE}
-beer <- merged[order(merged$City),]
-table(beer$State[beer$BreweryID])
+##This line will order our merged data by state, then by city and store it in a new data frame called simply "beer""
+beer <- merged[order(merged$State, merged$City),] 
+
+##The Unique() function is used to ensure the same brewery is not recorded multiple times for each state
+table(beer$State[unique(beer$BreweryID)])
 ```
 
 DBI was also tasked with providing a better understanding of MABco's beer offerings in
@@ -80,10 +76,9 @@ was reported in the states of Georgia, Florida, and Idaho when computing the med
 
 We have also provided median IBU values for each state for reference in the table below.
 ```{r, echo=TRUE}
-
 ##Create columns for both measurements to allow for quick lookups in the future on a per tuple basis
-beer$StateABVMedian <- sapply(beer$ABV[beer$State], median)
-beer$StateIBUMedian <- sapply(beer$IBU[beer$State], median)
+beer$StateABVMedian <- sapply(beer$ABV[beer$State], median, na.rm = TRUE)
+beer$StateIBUMedian <- sapply(beer$IBU[beer$State], median, na.rm = TRUE)
 
 ##Create a list of every state included and store it in a variable
 allStates <- unique(beer$State[beer$BreweryID])
@@ -91,7 +86,7 @@ allStates <- unique(beer$State[beer$BreweryID])
 ##Use that list to index the new columns and create a data frame to display the findings
 mediansByState <- data.frame(State=allStates, ABV_median = beer$StateABVMedian[allStates], IBU_median = beer$StateIBUMedian[allStates])
 
-##Display the ne data frame that holds the median data
+##Display the new data frame that holds the median data
 mediansByState
 ``` 
 
@@ -99,7 +94,7 @@ To help MABco better understand these results we've also plotted them graphicall
 ```{r, echo=TRUE}
 library(ggplot2)
 ##Create a plot with the staes along the x-axis
-p <- ggplot2::ggplot(mediansByState, aes(x = State))
+p <- ggplot(mediansByState, aes(x = State))
 
 ##Create and add the y-axis. Also, give it a low alpha value and change it's fill color
 p <- p + geom_bar(aes(y = IBU_median, color = "IBU"), stat="identity", alpha = .5 , fill="blue")
@@ -121,7 +116,7 @@ as well as the median bitterness levels (IBU) we are able to confirm that the st
 beer offerings with the highest median ABV are Georgia, Florida, and Idaho (with median ABVs of 0.092 respectively) as previously confirmed.  
 
 **However the beer with the highest ABV is Lee Hill Series Vol. 5 - 
-Belgian Style Quadrupel Ale (0.128 ABV).  This beer is sold in COLORADO.**
+Belgian Style Quadrupel Ale with an ABV of 12.8% (or .0128 as it appears in the datset).  This beer is sold in COLORADO.**
 ```{r, echo=TRUE}
 beer$State[which.max(beer$ABV)]
 ```
@@ -134,11 +129,12 @@ a median IBU score of 135.
 beer$State[which.max(beer$IBU)]
 ```
 
-```{r, echo=TRUE}
-summary(beer$ABV)
+In order to proved a clearer picture of the Alcohol By Volume, its summary will be displayed below
+```{r}
+##In order to display as a human readable percentage, the ABV will be scaled up by a factor of 100.
+##Also, please note that there are still 62 NA values that could not be factored into the statistics below
+summary(beer$ABV * 100) 
 ```
-
-
 
 *What is the relationship of Alcohol content and Bitterness for MABco's beer offerings?*
 The graph below is a scatterplot that examines the relationship between ABV and IBU for each
