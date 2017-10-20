@@ -8,8 +8,8 @@ output: html_document
 Mega Awesome Beer Corp. (MABco), has commissioned Data Busters, Inc.(DBI) to examine data sets they have provided, with the purpose of answering some key questions and findings that should be derived directly from the data provided.  These are the results. 
 
 Two data sets were provided by MABco and used by DBI to provide the findings below.  One data 
-set provides background on the beer offerings currently in production at MABco, and the other
-provides brewery data where each beer is produced.  We've read the raw data into our systems
+set provides background on key craft beer offerings currently in production in the U.S., and the other
+provides brewery data where each beer is produced respectively.  We've read the raw data into our systems
 for analysis.
 
 ```{r, echo=TRUE}
@@ -70,7 +70,7 @@ beer <- merged[order(merged$State, merged$City),]
 table(beer$State[unique(beer$BreweryID)])
 ```
 
-DBI was also tasked with providing a better understanding of MABco's beer offerings in
+DBI was also tasked with providing a better understanding of available beer offerings in
 terms of alcohol content (ABV).  We determined that the highest median ABV is 0.092, and
 was reported in the states of Georgia, Florida, and Idaho when computing the medians for all beer offerings in each state respectively.
 
@@ -129,14 +129,14 @@ a median IBU score of 135.
 beer$State[which.max(beer$IBU)]
 ```
 
-In order to proved a clearer picture of the Alcohol By Volume, its summary will be displayed below
+In order to provide a clearer picture of the Alcohol By Volume, its summary will be displayed below
 ```{r}
 ##In order to display as a human readable percentage, the ABV will be scaled up by a factor of 100.
 ##Also, please note that there are still 62 NA values that could not be factored into the statistics below
 summary(beer$ABV * 100) 
 ```
 
-*What is the relationship of Alcohol content and Bitterness for MABco's beer offerings?*
+*What is the relationship of Alcohol content and Bitterness for the available beer offerings?*
 The graph below is a scatterplot that examines the relationship between ABV and IBU for each
 beer that MABco has provided us data on.  As you can see there is a direct linear correlation 
 betwen the bitterness of the beer and it's corresponding alcohol content.  As the alcohol content increases, so does the bitterness.
@@ -154,7 +154,7 @@ scatterplot(ABV ~ IBU, data=merged,
 
 
 
-In summary DBI has provided MABco with a look at it's brewery presence (by U.S. State), and the results show the top five to be Texas (255), Colorado (253), Indiana (199), Oregon (188), and New York (168).  We've also provided data regarding the median Alcohol by volume (ABV) by each state.  Our findings determined that the states with the highest median (ABV) are Georgia, Florida, and Idaho, each recording a median of 0.092 respectively.  We also called out that although these states recorded the highest median values, the state with highest overall ABV from a single beer offering was found outside of this population.  Colorado sells the beer with the overall highest ABV offered (Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale (0.128 ABV)).  When examining all beer offerings the overall average (ABV) was found to be 0.05977.  Further, we provided data regarding the bitterness of MABco's beer offerings as measured in (IBU), and reported our findings by state. DBI determined that the states with the highest median bitter beers as measured in IBU's are NY, OH, NC, OR, PA, NM, MT, SC, and NJ respectively, with each state returning a median IBU score of (135 IBU).  When measuring (IBU) overall maximum's we found that the individual state returning the highest IBU (138) was Oregon (Bitter Bitch Imperial IPA).  Please note the state with the maximum bitterness value does reside in the highest median population we examined (unlike the ABV findings).  Lastly, we provided a graphical representation outlining the relationship between the Alcohol by Volume (ABV) and the bitterness (IBU) of each of MABco's beer offerings.  The graph clearly outlined a positive linear relationship between the variables.  In general, as the ABV increased, so did the bitterness levels as recorded by IBU.  Further evaluation can be conducted here with MABco's direction if more detailed analysis is needed regarding the noted correlation.
+In summary DBI has provided MABco with a look at brewery presence (by U.S. State) for key beer offerings, and the results show the top five to be Texas (255), Colorado (253), Indiana (199), Oregon (188), and New York (168).  We've also provided data regarding the median Alcohol by volume (ABV) by each state.  Our findings determined that the states with the highest median (ABV) are Georgia, Florida, and Idaho, each recording a median of 0.092 respectively.  We also called out that although these states recorded the highest median values, the state with highest overall ABV from a single beer offering was found outside of this population.  Colorado sells the beer with the overall highest ABV offered (Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale (0.128 ABV)).  When examining all beer offerings the overall average (ABV) was found to be 0.05977.  Further, we provided data regarding the bitterness of the beer offerings as measured in (IBU), and reported our findings by state. DBI determined that the states with the highest median bitter beers as measured in IBU's are NY, OH, NC, OR, PA, NM, MT, SC, and NJ respectively, with each state returning a median IBU score of (135 IBU).  When measuring (IBU) overall maximum's we found that the individual state returning the highest IBU (138) was Oregon (Bitter Bitch Imperial IPA).  Please note the state with the maximum bitterness value does reside in the highest median population we examined (unlike the ABV findings).  Lastly, we provided a graphical representation outlining the relationship between the Alcohol by Volume (ABV) and the bitterness (IBU) of each of the beers in our data set.  The graph clearly outlined a positive linear relationship between the variables.  In general, as the ABV increased, so did the bitterness levels as recorded by IBU.  Further evaluation can be conducted here with MABco's direction if more detailed analysis is needed regarding the noted correlation.
 
 This concludes our analysis.
 
