@@ -34,21 +34,21 @@ str(breweriesData)
 
 In order to take full advantage of the data provided we have opted to merge the two files.
 The new merged data set contains ALL the measurable variables in one file called "merged",
-and will now allow us to cross reference the beer and brewery data for a more complete analysis.
+and allows us to cross reference the beer and brewery data for a more complete analysis.
 ```{r}
 merged <- merge(beerData, breweriesData, by = "BreweryID", all=TRUE)
 ```
 
 To further organize our data, we have taken a look at the first and last few entries within
-our newly merged data set. This will allow us to a) ensure we have a better understanding of
-the new data file we are working with, and b) help to ensure all data was properly pulled 
-into the file as expected.  Upon inspection of the first 6 and last 6 entries within the 'merged' file we see no unexpected issues.
+our newly merged data set. This brief overview helps us to have a better understanding of
+the new data file we are working with, and help to ensure all data was properly pulled 
+into the file as expected.
 ```{r}
 head(merged)
 tail(merged)
 ```
 
-As expected, we did encounter some instances of missing data after the merge. Specifically, there were 1067 instances in total of missing datum that were not measured/recorded and are marked as "NA".  There were 62 instances in the ABV column and 1005 in the IBU column.  
+As expected, we encountered some instances of missing data after the merge. Specifically, there were 1067 instances in total of missing datum that were not measured/recorded and are marked as "NA".  There were 62 instances in the ABV column and 1005 in the IBU column.  A few columns are also in need of casting to te appropriate data types.
 ```{r}
 ##First we must fix the numeric columns incorrectly listed as ordered factors
 ##A direct conversion to a numeric will instead return the rank of the factor
@@ -70,11 +70,8 @@ beer <- merged[order(merged$State, merged$City),]
 table(beer$State[!duplicated(beer$BreweryID)])
 ```
 
-DBI was also tasked with providing a better understanding of available beer offerings in
-terms of alcohol content (ABV).  We determined that the highest median ABV is 0.0625, and
-was reported in both Washington D.C. and Kentucky when computing the medians for all beer offerings in each state respectively.
-
-We have also provided median IBU values for each state for reference in the table below.
+DBI was tasked with providing a better understanding of available beer offerings in
+terms of alcohol content (ABV) and International Bitterness Units (IBU).  In an effort to facilitate that understanding, we have subsected the data by state and have calculated the median ABV and IBU scores for each subsect.
 ```{r}
 ##Create columns for both measurements to allow for quick lookups in the future
 StateABVMedian <- aggregate(beer$ABV, by=list(beer$State),FUN=median, na.rm = TRUE)[,2]
@@ -91,6 +88,8 @@ mediansByState <- data.frame(State=allStates, ABV_median = StateABVMedian[allSta
 mediansByState
 ```
 
+DBI determined that the *highest median ABV is 6.25%*, and
+was reported in both *Washington D.C. and Kentucky* when computing the medians for all beer offerings in each state.
 To help MABco better understand these results, they have been plotted graphically for reference.
 ```{r}
 library(ggplot2)
@@ -114,17 +113,16 @@ p <- p + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 p
 ```
 
-Upon review of the results of the median alcohol content (ABV), and the median bitterness levels (IBU), we are able to confirm that the highest median ABV are located in Washington D.C. and Kentucky (with median ABVs of 0.0625 recorded in each).  
+Upon inspection of the graphic depicting the median alcohol content (ABV) and the median bitterness levels (IBU) by state, we are able to confirm that the highest median ABV are indeed located in Washington D.C. and Kentucky with a median ABVs of 6.25%.  
 
-**However the beer with the highest ABV is Lee Hill Series Vol. 5 - 
+**However, the single beer with the highest ABV is Lee Hill Series Vol. 5 - 
 Belgian Style Quadrupel Ale with an ABV of 12.8% (or .0128 as it appears in the datset).  This beer is sold in COLORADO.**
 ```{r, echo=TRUE}
 beer$State[which.max(beer$ABV)]
 ```
 
-We are further able to confirm that the state with the highest median bitter beers as measured in IBU's is Maine. Maine returned a median IBU score of 61.0.  
-**However, the individual state returning the highest IBU (138)is OREGON (Bitter Bitch Imperial IPA)**
-
+We are further able to confirm that the state with the highest median bitterness, as measured in IBU's, is Maine. Maine returned a median IBU score of 61.0.  
+**However, the beer with the highest IBU rating is OREGON's Bitter Bitch Imperial IPA with a rating of 138**
 ```{r, echo=TRUE}
 beer$State[which.max(beer$IBU)]
 ```
@@ -139,8 +137,6 @@ summary(beer$ABV * 100)
 *What is the relationship of Alcohol content and Bitterness for the available beer offerings?*
 The graph below is a scatterplot that examines the relationship between ABV and IBU for each
 beer MABco offered data on. There is a direct linear correlation between the bitterness of the beer and the corresponding alcohol content. As the alcohol content increases, so does the bitterness.
-
-
 ```{r, echo=TRUE}
 ## Scatterplot examining relationship between bitterness and alcohol content ##
 ## ABV vs. IBU 
@@ -151,7 +147,5 @@ scatterplot(ABV ~ IBU, data=merged,
    labels=row.names(merged))
 ```
 
-
-
-The results of the data MABCo provided show the top five breweries offering specialty craft beers are in Colorado (47), California (39), Michigan (32), Oregon (29), and Texas (28). The data also presents the median alcohol by volume (ABV) for each state. The  highest reported median ABV were recorded in Washington D.C. and Kentucky, with each recording a median of 0.0625 or 6.25% ABV. Although these states recorded the highest median values, Colorado's Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale with an ABV of 0.128 (or 12.8%) ABV was the highest overall.  When examining all beer offerings, the average ABV was found to be 0.05977 (or 5.977%). Data was provided for each state regarding the bitterness of the beers measured in international bitterness units, IBU. DBI determined that the state with the highest median bitter beers as measured in IBU's is Maine.  Mained returned a median IBU score of (61.0) IBU.  When measuring IBU overall maximum's we found that the individual state returning the highest IBU of (138) was Oregon with their Bitter Bitch Imperial IPA. Unlike Colorado with the highest ABV, Oregon is included in the highest median population examined.  A graphical representation outlining the positive linear relationship between the ABV and the IBU of each of the beers is displayed. As the ABV increased, so did the IBU. 
+The results of the data MABCo provided show the states most populated with breweries offering specialty craft beers are in Colorado (47), California (39), Michigan (32), Oregon (29), and Texas (28).  The data also presents the median alcohol by volume (ABV) for each state.  The  highest reported median ABV were recorded in Washington D.C. and Kentucky, with each recording a median of 6.25% ABV. Although these states recorded the highest median values, Colorado's Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale with an ABV of 12.8% was the highest overall.  When examining all beer offerings, the average ABV was found to be 5.977%.  Regarding the bitterness of the beers, measured in international bitterness units (IBU), DBI determined the state with the highest median IBU count was Maine.  Mained returned a median score of 61.0 IBU.  When measuring the overall maximum's for IBU we found that the individual state returning the highest count, with a score of 138, was Oregon with their Bitter Bitch Imperial IPA.  Unlike Colorado, which had the highest ABV, Oregon is included in the top 6 highest median IBU counts.  A graphical representation outlining the positive linear relationship between the ABV and the IBU of each of the beers is displayed.  As the ABV increased, so did the IBU.  To further enhance this study, a linear correlation test could be performed.
 
