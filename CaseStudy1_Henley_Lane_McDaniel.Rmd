@@ -149,3 +149,10 @@ scatterplot(ABV ~ IBU, data=merged,
 
 The results of the data MABCo provided show the states most populated with breweries offering specialty craft beers are in Colorado (47), California (39), Michigan (32), Oregon (29), and Texas (28).  The data also presents the median alcohol by volume (ABV) for each state.  The  highest reported median ABV were recorded in Washington D.C. and Kentucky, with each recording a median of 6.25% ABV. Although these states recorded the highest median values, Colorado's Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale with an ABV of 12.8% was the highest overall.  When examining all beer offerings, the average ABV was found to be 5.977%.  Regarding the bitterness of the beers, measured in international bitterness units (IBU), DBI determined the state with the highest median IBU count was Maine.  Mained returned a median score of 61.0 IBU.  When measuring the overall maximum's for IBU we found that the individual state returning the highest count, with a score of 138, was Oregon with their Bitter Bitch Imperial IPA.  Unlike Colorado, which had the highest ABV, Oregon is included in the top 6 highest median IBU counts.  A graphical representation outlining the positive linear relationship between the ABV and the IBU of each of the beers is displayed.  As the ABV increased, so did the IBU.  To further enhance this study, a linear correlation test could be performed.
 
+**Project Team:**
+Kris Henley
+Griffin Lane
+Josephine McDaniel
+
+**GitHub Repo URL:**
+https://github.com/GriffinLane/DataBustersCaseStudy
