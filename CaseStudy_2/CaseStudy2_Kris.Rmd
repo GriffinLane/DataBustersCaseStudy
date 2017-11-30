@@ -134,10 +134,17 @@ MeanTrainingTimesLastYear2, MeanWorkLifeBalance2, MeanYearsAtCompany2, MeanYears
 MeanBottomAttrition
 ```
 
+##Absolute value showing difference in numeric variables between top/bottom attrition
+```{r, echo=TRUE}
+Difference <- MeanTopAttrition[1,2:21]-MeanBottomAttrition[1,2:21]
+DifferenceDF <- data.frame((abs(Difference)))
+DifferenceDF
+```
 
-
-
-
+##Stand out differences:
+1)  Mean Total Working Years:  10.87 longer for less attrition group
+2)  Years at Company:  less attrition group on average 5.2 years longer
+3)  Age:  Group with less attrition is on average 8.1 years OLDER
 
 
 
