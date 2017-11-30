@@ -16,19 +16,38 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ##look at data by job role and attrition
-```{r, echo=True}
-library(plyr)
+```{r, echo=TRUE}
 AttritionbyRole <- CaseStudy2_data[c("Attrition", "JobRole")]
-AttritionbyRole
+library(Hmisc)
+ABR <- AttritionbyRole[AttritionbyRole$Attrition =="Yes",]
+ABR2 <- AttritionbyRole[AttritionbyRole$Attrition =="No",]
+ABR_countYES <- count(ABR, "JobRole") 
+ABR_countNO <- count(ABR2, "JobRole")
+ABR_countYES
+ABR_countNO
+
 ```
+
+
+##Merge the count results
+
+```{r, echo=TRUE}
+mergeCount <- merge(ABR_countYES, ABR_countNO, by=c('JobRole'),all=TRUE)[,-1]
+mergeCount$JobRole = ABR_countYES$JobRole
+mergeCount
+AttritionRatio <- ABR_countYES[1:9,2]/(ABR_countYES[1:9,2]+ABR_countNO[1:9,2])
+AttritionRatioDF <- data.frame(mergeCount$JobRole, AttritionRatio)
+AttritionRatioDF
+```
+
 
 ```{r, echo=True}
 ##ggplot barchart
 library(ggplot2)
 
 ##Barplot showing count of attrition by job roles
-p <- ggplot2::ggplot(AttritionbyRole, aes(y = Attrition), fill=JobRole)
-p <- p + geom_bar(aes(x = JobRole, color = JobRole), stat="identity")
+p <- ggplot2::ggplot(AttritionRatioDF, aes(y = AttritionRatio), fill=mergeCount.JobRole)
+p <- p + geom_bar(aes(x = mergeCount.JobRole, color = mergeCount.JobRole), stat="identity")
 ## Flip the coordinates to better read the States Names
 p <- p + coord_flip()
 ## Add a main title and center
@@ -42,31 +61,31 @@ p
 
 ```
 
-*Top 3 Attrition counts by Role: 
-1) Sales Executive
-2) Research Scientist
-3) Laboratory Technician
+*Top 3 Attrition counts by Role as graphed above: 
+1) Sales Representative
+2) Laboratory Technician
+3) Human Resources
 
-*Lowest 3 Attrition counts by Role:
-1) Human Resources
-2) Research Director
-3) Manager
+*Lowest 3 Attrition counts by Role as graphed above:
+1) Research Director
+2) Manager
+3) Healthcare Representative
 
 
 ##creating subsets for each category
 
 ```{r, echo=TRUE}
 #Top
-TopAttrition <- subset(CaseStudy2_data, JobRole %in% c("Sales Executive","Research Scientist", "Laboratory Technician"))
-SalesExecutive <- subset(CaseStudy2_data, JobRole=="Sales Executive")
-ResearchScientist <- subset(CaseStudy2_data, JobRole=="Research Scientist")
+TopAttrition <- subset(CaseStudy2_data, JobRole %in% c("Sales Representative","Laboratory Technician","Human Resources"))
+SalesRep <- subset(CaseStudy2_data, JobRole=="Sales Representative")
 LaboratoryTechnician <- subset(CaseStudy2_data, JobRole=="Laboratory Technician")
+HR <- subset(CaseStudy2_data, JobRole=="Human Resources")
 
 #Bottom
-BottomAttrition <- subset(CaseStudy2_data, JobRole %in% c("Human Resources","Research Director", "Manager"))
-HumanResources <- subset(CaseStudy2_data, JobRole=="Human Resources")
+BottomAttrition <- subset(CaseStudy2_data, JobRole %in% c("Research Director", "Manager","Healthcare Representative"))
 ResearchDirector <- subset(CaseStudy2_data, JobRole=="Research Director")
 Manager <- subset(CaseStudy2_data, JobRole=="Manager")
+HealthcareRep <- subset(CaseStudy2_data, JobRole=="Healthcare Representative")
 ```
 
 ##creating mean variables for our numeric data
@@ -142,35 +161,34 @@ DifferenceDF
 ```
 
 ##Stand out differences:
-1)  Mean Total Working Years:  10.87 longer for less attrition group
-2)  Years at Company:  less attrition group on average 5.2 years longer
-3)  Age:  Group with less attrition is on average 8.1 years OLDER
+1)  Mean Total Working Years:  12.26 longer for less attrition group
+2)  Years at Company:  less attrition group on average 6.39 years longer
+3)  Age:  Group with less attrition is on average 9.65 years OLDER
+4)  Monthly Income:  $9607 more for less attrition group
 
 
+```{r, echo=TRUE}
+AttritionbyGender <- CaseStudy2_data[c("Attrition", "Gender", "JobRole")]
+library(Hmisc)
+ABG <- AttritionbyGender[AttritionbyGender$Attrition =="Yes",]
+ABG2 <- AttritionbyGender[AttritionbyGender$Attrition =="No",]
+ABG_countYES <- count(ABG, "Gender") 
+ABG_countNO <- count(ABG2, "Gender")
+ABG_countYES
+ABG_countNO
+```
 
+```{r, echo=TRUE}
+##Male
+mergeCount2 <- merge(ABG_countYES, ABG_countNO, by=c('Gender'),all=TRUE)[,-1]
+mergeCount2$Gender = ABG_countYES$Gender
+AttritionRatioMALE <- ABG_countYES[2,2]/(ABG_countYES[2,2]+ABG_countNO[2,2])
+AttritionRatioFEMALE <- ABG_countYES[1,2]/(ABG_countYES[1,2]+ABG_countNO[1,2])
+AttritionRatioMALE
+AttritionRatioFEMALE
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+##As seen above there is not a significant difference in attrition rates by gender.
 
 
 
