@@ -1,0 +1,173 @@
+---
+title: "Case Study 2_Henley_Lane_McDaniel"
+author: "Kris Henley"
+date: "November 30, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+*Initial exploratory data analysis.
+*Intent:  uncover top 3 factors contributing to attition
+*Intent:  identify specific trends that emerge regarding specific job roles
+
+
+##look at data by job role and attrition
+```{r, echo=True}
+library(plyr)
+AttritionbyRole <- CaseStudy2_data[c("Attrition", "JobRole")]
+AttritionbyRole
+```
+
+```{r, echo=True}
+##ggplot barchart
+library(ggplot2)
+
+##Barplot showing count of attrition by job roles
+p <- ggplot2::ggplot(AttritionbyRole, aes(y = Attrition), fill=JobRole)
+p <- p + geom_bar(aes(x = JobRole, color = JobRole), stat="identity")
+## Flip the coordinates to better read the States Names
+p <- p + coord_flip()
+## Add a main title and center
+p <- p + labs(title="Count of Attrition Instances by Job Role")
+theme_update(plot.title = element_text(hjust = 0.5))
+theme_update(text = element_text(size=7))
+##Change axis labels to something more informative
+p <- p + labs(y="Attrition Count")
+p <- p + labs(x="JObRole")  
+p
+
+```
+
+*Top 3 Attrition counts by Role: 
+1) Sales Executive
+2) Research Scientist
+3) Laboratory Technician
+
+*Lowest 3 Attrition counts by Role:
+1) Human Resources
+2) Research Director
+3) Manager
+
+
+##creating subsets for each category
+
+```{r, echo=TRUE}
+#Top
+TopAttrition <- subset(CaseStudy2_data, JobRole %in% c("Sales Executive","Research Scientist", "Laboratory Technician"))
+SalesExecutive <- subset(CaseStudy2_data, JobRole=="Sales Executive")
+ResearchScientist <- subset(CaseStudy2_data, JobRole=="Research Scientist")
+LaboratoryTechnician <- subset(CaseStudy2_data, JobRole=="Laboratory Technician")
+
+#Bottom
+BottomAttrition <- subset(CaseStudy2_data, JobRole %in% c("Human Resources","Research Director", "Manager"))
+HumanResources <- subset(CaseStudy2_data, JobRole=="Human Resources")
+ResearchDirector <- subset(CaseStudy2_data, JobRole=="Research Director")
+Manager <- subset(CaseStudy2_data, JobRole=="Manager")
+```
+
+##creating mean variables for our numeric data
+
+```{r, echo=TRUE}
+MeanAge <- mean(TopAttrition$Age)
+MeanEnvironmentSatisfaction <- mean(TopAttrition$EnvironmentSatisfaction)
+MeanHourlyRate <-mean(TopAttrition$HourlyRate)
+MeanJobInvolvement <-mean(TopAttrition$JobInvolvement)
+MeanJobLevel <-mean(TopAttrition$JobLevel)
+MeanJobSatisfaction <-mean(TopAttrition$JobSatisfaction)
+MeanMonthlyIncome <-mean(TopAttrition$MonthlyIncome)
+MeanMonthlyRate <-mean(TopAttrition$MonthlyRate)
+MeanNumCompaniesWorked <-mean(TopAttrition$NumCompaniesWorked)
+MeanPercentSalaryHike <-mean(TopAttrition$PercentSalaryHike)
+MeanPerformanceRating <-mean(TopAttrition$PerformanceRating)
+MeanRelationshipSatisfaction <-mean(TopAttrition$RelationshipSatisfaction)
+MeanStockOptionLevel <-mean(TopAttrition$StockOptionLevel)
+MeanTotalWorkingYears <-mean(TopAttrition$TotalWorkingYears)
+MeanTrainingTimesLastYear <-mean(TopAttrition$TrainingTimesLastYear)
+MeanWorkLifeBalance <-mean(TopAttrition$WorkLifeBalance)
+MeanYearsAtCompany <-mean(TopAttrition$YearsAtCompany)
+MeanYearsInCurrentRole <-mean(TopAttrition$YearsInCurrentRole)
+MeanYearsSinceLastPromotion <-mean(TopAttrition$YearsSinceLastPromotion)
+MeanYearsWithCurrManager <-mean(TopAttrition$YearsWithCurrManager)
+
+MeanAge2 <- mean(BottomAttrition$Age)
+MeanEnvironmentSatisfaction2 <- mean(BottomAttrition$EnvironmentSatisfaction)
+MeanHourlyRate2 <-mean(BottomAttrition$HourlyRate)
+MeanJobInvolvement2 <-mean(BottomAttrition$JobInvolvement)
+MeanJobLevel2 <-mean(BottomAttrition$JobLevel)
+MeanJobSatisfaction2 <-mean(BottomAttrition$JobSatisfaction)
+MeanMonthlyIncome2 <-mean(BottomAttrition$MonthlyIncome)
+MeanMonthlyRate2 <-mean(BottomAttrition$MonthlyRate)
+MeanNumCompaniesWorked2 <-mean(BottomAttrition$NumCompaniesWorked)
+MeanPercentSalaryHike2 <-mean(BottomAttrition$PercentSalaryHike)
+MeanPerformanceRating2 <-mean(BottomAttrition$PerformanceRating)
+MeanRelationshipSatisfaction2 <-mean(BottomAttrition$RelationshipSatisfaction)
+MeanStockOptionLevel2 <-mean(BottomAttrition$StockOptionLevel)
+MeanTotalWorkingYears2 <-mean(BottomAttrition$TotalWorkingYears)
+MeanTrainingTimesLastYear2 <-mean(BottomAttrition$TrainingTimesLastYear)
+MeanWorkLifeBalance2 <-mean(BottomAttrition$WorkLifeBalance)
+MeanYearsAtCompany2 <-mean(BottomAttrition$YearsAtCompany)
+MeanYearsInCurrentRole2 <-mean(BottomAttrition$YearsInCurrentRole)
+MeanYearsSinceLastPromotion2 <-mean(BottomAttrition$YearsSinceLastPromotion)
+MeanYearsWithCurrManager2 <-mean(BottomAttrition$YearsWithCurrManager)
+
+```
+
+##creating new df with only numeric mean data from above for top attrition
+
+```{r, echo=TRUE}
+MeanTopAttrition = data.frame(TopAttrition$JobRole, MeanAge, MeanEnvironmentSatisfaction, MeanHourlyRate, MeanJobInvolvement, MeanJobLevel, MeanJobSatisfaction,MeanMonthlyIncome,
+MeanMonthlyRate, MeanNumCompaniesWorked, MeanPercentSalaryHike, MeanPerformanceRating, MeanRelationshipSatisfaction, MeanStockOptionLevel, MeanTotalWorkingYears,
+MeanTrainingTimesLastYear, MeanWorkLifeBalance, MeanYearsAtCompany, MeanYearsInCurrentRole, MeanYearsSinceLastPromotion, MeanYearsWithCurrManager)
+MeanTopAttrition
+```
+
+##creating new df with only numeric mean data from above for bottom attrition
+
+```{r, echo=TRUE}
+MeanBottomAttrition = data.frame(BottomAttrition$JobRole, MeanAge2, MeanEnvironmentSatisfaction2, MeanHourlyRate2, MeanJobInvolvement2, MeanJobLevel2, MeanJobSatisfaction2,MeanMonthlyIncome2,
+MeanMonthlyRate2, MeanNumCompaniesWorked2, MeanPercentSalaryHike2, MeanPerformanceRating2, MeanRelationshipSatisfaction2, MeanStockOptionLevel2, MeanTotalWorkingYears2,
+MeanTrainingTimesLastYear2, MeanWorkLifeBalance2, MeanYearsAtCompany2, MeanYearsInCurrentRole2, MeanYearsSinceLastPromotion2, MeanYearsWithCurrManager2)
+MeanBottomAttrition
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
